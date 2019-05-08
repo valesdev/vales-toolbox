@@ -1,46 +1,32 @@
 {
-	"name": "",
-	"version": "",
-	"description": "",
-	"repository": "",
-	"license": "",
-	"private": true,
-	"scripts": {
-		"build": "node ./node_modules/webpack/bin/webpack.js -d --progress --color --display-error-details",
-		"watch": "node ./node_modules/webpack/bin/webpack.js -d --progress --color --display-error-details --watch",
-		"dist": "node ./node_modules/webpack/bin/webpack.js -p --progress --color"
-	},
-	"dependencies": {
-		"jquery": "*",
-		"bootstrap": "*",
-		"base64-js": "*",
-		"file-saver": "*",
-		"text-encoding": "*",
-		"store": "*",
-		"numbro": "*",
-		"vue": "*",
-		"vue-resource": "*",
-		"vue-router": "*"
-	},
-	"devDependencies": {
-		"babel-core": "*",
-		"babel-loader": "*",
-		"babel-preset-es2015": "*",
-		"babel-preset-env": "*",
-		"url-loader": "*",
-		"file-loader": "*",
-		"css-loader": "*",
-		"style-loader": "*",
-		"node-sass": "*",
-		"sass-loader": "*",
-		"less": "*",
-		"less-loader": "*",
-		"vue-loader": "*",
-		"vue-html-loader": "*",
-		"vue-template-compiler": "*",
-		"extract-text-webpack-plugin": "beta",
-		"clean-webpack-plugin": "*",
-		"html-webpack-plugin": "*",
-		"webpack": "*"
-	}
+  "name": "vales-tools",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "base64-js": "^1.3.0",
+    "bootstrap": "^4.3.1",
+    "core-js": "^2.6.5",
+    "file-saver": "^2.0.1",
+    "numbro": "^2.1.2",
+    "vue": "^2.6.10",
+    "vue-meta": "^1.6.0",
+    "vue-router": "^3.0.6"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.7.0",
+    "@vue/cli-plugin-eslint": "^3.7.0",
+    "@vue/cli-service": "^3.7.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.2.2",
+    "sass": "^1.20.1",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.10"
+  }
 }
