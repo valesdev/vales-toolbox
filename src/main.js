@@ -1,5 +1,6 @@
-import Vue from 'vue'
+import '@/polyfills'
 
+import Vue from 'vue'
 import App from '@/app'
 
 import components from '@/components'

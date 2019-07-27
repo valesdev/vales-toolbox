@@ -38,11 +38,11 @@
       <div class="col-md-2 align-self-center">
 
         <p>
-          <a href="javascript:void(0);" class="btn btn-block btn-secondary" @click="encode">Encode</a>
+          <a href="javascript:void(0);" class="btn btn-block btn-secondary" @click="toEncode">Encode</a>
         </p>
 
         <p>
-          <a href="javascript:void(0);" class="btn btn-block btn-secondary" @click="decode">Decode</a>
+          <a href="javascript:void(0);" class="btn btn-block btn-secondary" @click="toDecode">Decode</a>
         </p>
 
       </div>
@@ -78,86 +78,91 @@
 </template>
 
 <script>
-import Base64 from 'base64-js'
 import FileSaver from 'file-saver'
 export default {
   data () {
     return {
       inputType: 'text',
       inputText: '',
-      inputFileByteArray: '',
+      inputFile: '',
       outputType: 'text',
       outputText: ''
     }
   },
   methods: {
-    readInputFile (e) {
-      const self = this
-      const reader = new FileReader()
-      reader.onload = function () {
-        self.inputFileByteArray = new Uint8Array(this.result)
-      }
-      reader.readAsArrayBuffer(e.target.files[0])
+    readInputFile (event) {
+      this.$set(this, 'inputFile', event.target.files[0])
     },
-    encode () {
+
+    readBlobAsString (blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = function () {
+          resolve(this.result)
+        }
+        reader.readAsText(blob, 'UTF-8')
+      })
+    },
+
+    readBlobAsBase64 (blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = function () {
+          const result = this.result.substring(this.result.indexOf(';base64,') + 8)
+          resolve(result)
+        }
+        reader.readAsDataURL(blob)
+      })
+    },
+
+    readStringAsByteArray (string) {
+      const byteNumbers = new Array(string.length)
+      for (let i = 0; i < string.length; i++) {
+        byteNumbers[i] = string.charCodeAt(i)
+      }
+      const byteArray = new Uint8Array(byteNumbers)
+      return byteArray
+    },
+
+    toEncode () {
       switch (this.inputType) {
         case 'text':
-          this.output(Base64.fromByteArray(this.toUTF8Array(this.inputText)))
+          this.output(window.btoa(this.inputText))
           break
         case 'file':
-          this.output(Base64.fromByteArray(this.inputFileByteArray))
+          this.readBlobAsBase64(this.inputFile)
+            .then(result => {
+              this.output(result)
+            })
           break
       }
     },
-    decode () {
+
+    toDecode () {
       switch (this.inputType) {
         case 'text':
-          this.output(Base64.toByteArray(this.inputText))
+          this.output(window.atob(this.inputText))
           break
         case 'file':
-          this.output(Base64.toByteArray(Buffer.from(this.inputFileByteArray).toString('utf-8')))
+          this.readBlobAsString(this.inputFile)
+            .then(result => {
+              this.output(window.atob(result))
+            })
           break
       }
     },
-    output (data) {
+
+    output (string) {
       switch (this.outputType) {
         case 'text':
-          if (typeof data === 'object') {
-            this.outputText = Buffer.from(data).toString('utf-8')
-          }
+          this.$set(this, 'outputText', string)
           break
         case 'file':
-          const blob = new Blob([data], { type: 'application/octet-stream' })
+          const byteArray = this.readStringAsByteArray(string)
+          const blob = new Blob([byteArray], { type: 'application/octet-stream' })
           FileSaver.saveAs(blob, 'data')
           break
       }
-    },
-    toUTF8Array (str) {
-      const arr = []
-      for (let i = 0; i < str.length; i++) {
-        var charcode = str.charCodeAt(i)
-        if (charcode < 0x80) {
-          arr.push(charcode)
-        } else if (charcode < 0x800) {
-          arr.push(0xc0 | (charcode >> 6),
-            0x80 | (charcode & 0x3f))
-        } else if (charcode < 0xd800 || charcode >= 0xe000) {
-          arr.push(0xe0 | (charcode >> 12),
-            0x80 | ((charcode >> 6) & 0x3f),
-            0x80 | (charcode & 0x3f))
-        } else { // surrogate pair
-          i++
-          // UTF-16 encodes 0x10000-0x10FFFF by
-          // subtracting 0x10000 and splitting the
-          // 20 bits of 0x0-0xFFFFF into two halves
-          charcode = 0x10000 + (((charcode & 0x3ff) << 10) | (str.charCodeAt(i) & 0x3ff))
-          arr.push(0xf0 | (charcode >> 18),
-            0x80 | ((charcode >> 12) & 0x3f),
-            0x80 | ((charcode >> 6) & 0x3f),
-            0x80 | (charcode & 0x3f))
-        }
-      }
-      return arr
     }
   },
   metaInfo: {

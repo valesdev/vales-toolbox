@@ -73,7 +73,7 @@
         <li>还款总额：<code>{{ result['capTotal'] | currency }}</code></li>
         <li>利息总额：<code>{{ result['varerestTotal'] | currency }}</code></li>
       </ul>
-      <div class="table-responsive loan-result">
+      <div class="table-responsive text-monospace" style="font-size: 75%;">
         <table class="table table-bordered table-hover table-sm">
           <thead>
             <tr>
@@ -203,10 +203,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.loan-result {
-  font-size: 75%;
-  font-family: 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace';
-}
-</style>
