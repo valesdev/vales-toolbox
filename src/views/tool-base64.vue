@@ -94,27 +94,6 @@ export default {
       this.$set(this, 'inputFile', event.target.files[0])
     },
 
-    readBlobAsString (blob) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = function () {
-          resolve(this.result)
-        }
-        reader.readAsText(blob, 'UTF-8')
-      })
-    },
-
-    readBlobAsBase64 (blob) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = function () {
-          const result = this.result.substring(this.result.indexOf(';base64,') + 8)
-          resolve(result)
-        }
-        reader.readAsDataURL(blob)
-      })
-    },
-
     readStringAsByteArray (string) {
       const byteNumbers = new Array(string.length)
       for (let i = 0; i < string.length; i++) {
@@ -130,7 +109,7 @@ export default {
           this.output(window.btoa(this.inputText))
           break
         case 'file':
-          this.readBlobAsBase64(this.inputFile)
+          this.$file.blobToBase64({ blob: this.inputFile })
             .then(result => {
               this.output(result)
             })
@@ -144,7 +123,7 @@ export default {
           this.output(window.atob(this.inputText))
           break
         case 'file':
-          this.readBlobAsString(this.inputFile)
+          this.$file.blobToString({ blob: this.inputFile })
             .then(result => {
               this.output(window.atob(result))
             })
@@ -158,10 +137,10 @@ export default {
           this.$set(this, 'outputText', string)
           break
         case 'file':
-          const byteArray = this.readStringAsByteArray(string)
-          const blob = new Blob([byteArray], { type: 'application/octet-stream' })
-          FileSaver.saveAs(blob, 'data')
-          break
+          this.$file.stringToBlob({ string })
+            .then(blob => {
+              FileSaver.saveAs(blob, 'data')
+            })
       }
     }
   },

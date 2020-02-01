@@ -20,8 +20,16 @@ export default new VueRouter({
       component: () => import(/* webpackChunkName: "view" */ '@/views/tool-base64')
     },
     {
+      path: '/qrcode',
+      component: () => import(/* webpackChunkName: "view" */ '@/views/tool-qrcode')
+    },
+    {
       path: '/loan',
       component: () => import(/* webpackChunkName: "view" */ '@/views/tool-loan')
+    },
+    {
+      path: '/broadlink',
+      component: () => import(/* webpackChunkName: "view" */ '@/views/tool-broadlink')
     },
     {
       path: '*',

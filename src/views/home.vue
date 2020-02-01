@@ -20,6 +20,20 @@
 
         <p>
           <router-link
+            to="/qrcode"
+            class="btn btn-block btn-light"
+          >QR Code</router-link>
+        </p>
+
+        <p>
+          <router-link
+            to="/broadlink"
+            class="btn btn-block btn-light"
+          >Broadlink</router-link>
+        </p>
+
+        <p>
+          <router-link
             to="/loan"
             class="btn btn-block btn-light"
           >Loan</router-link>
