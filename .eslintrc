@@ -4,14 +4,13 @@
     "node": true
   },
   "extends": [
-    "plugin:vue/essential",
+    "plugin:vue/vue3-essential",
     "@vue/standard"
   ],
-  "rules": {
-    "no-console": "error",
-    "no-debugger": "error"
-  },
   "parserOptions": {
-    "parser": "babel-eslint"
+    "parser": "@babel/eslint-parser"
+  },
+  "rules": {
+    "vue/multi-word-component-names": "off"
   }
 }

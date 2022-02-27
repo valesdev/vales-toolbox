@@ -1,35 +1,35 @@
 {
-  "name": "vales-tools",
-  "version": "0.1.0",
+  "name": "@vales/vales-toolbox",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:dev": "npm run build",
-    "build:prod": "npm run build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "bootstrap": "^4.4.1",
-    "core-js": "^3.6.4",
-    "file-saver": "^2.0.2",
-    "jszip": "^3.2.2",
-    "numbro": "^2.1.2",
-    "qrcode": "^1.4.4",
-    "vue": "^2.6.11",
-    "vue-meta": "^2.3.2",
-    "vue-router": "^3.1.5"
+    "core-js": "^3.8.3",
+    "file-promisify": "^2.0.2",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.7.1",
+    "qrcode": "^1.5.0",
+    "vue": "^3.2.13",
+    "vue-router": "^4.0.3"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.1.2",
-    "@vue/cli-plugin-eslint": "^4.1.2",
-    "@vue/cli-service": "^4.1.2",
-    "@vue/eslint-config-standard": "^4.0.0",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.8.0",
-    "eslint-plugin-vue": "^6.1.2",
-    "sass": "^1.25.0",
-    "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-standard": "^6.1.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "sass": "^1.32.7",
+    "sass-loader": "^12.0.0"
   }
 }

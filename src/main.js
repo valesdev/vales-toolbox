@@ -1,25 +1,11 @@
-import Vue from 'vue'
-import App from '@/app'
+import { createApp } from 'vue'
 
-import components from '@/components'
+import App from '@/App'
 
 import router from '@/router'
 
-import fileService from '@/services/file'
+const app = createApp(App)
 
-Vue.use(components)
-
-Vue.use(fileService)
-
-Vue.config.productionTip = false
-
-// eslint-disable-next-line no-new
-new Vue({
-  router,
-  created () {
-    this.$mount('#app')
-  },
-  render (createElement) {
-    return createElement(App)
-  }
-})
+app
+  .use(router)
+  .mount('#app')

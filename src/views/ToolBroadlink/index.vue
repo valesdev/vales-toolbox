@@ -1,69 +1,54 @@
 <template>
-  <div>
+  <main>
+    <h2>博联信号转换</h2>
+    <hr />
+
     <div class="row">
-
       <div class="col-md-5">
-
-        <p>
-          <textarea rows="10" class="form-control" v-model="inputText" placeholder="Input" />
-        </p>
-
+        <div class="mb-3">
+          <textarea rows="12" class="form-control" v-model="inputText" placeholder="Input" />
+        </div>
       </div>
 
       <div class="col-md-2 align-self-center">
-
-        <p>
-          <a
-            href="javascript:void(0);"
-            class="btn btn-block btn-secondary"
-            @click="outputText = hextob64(inputText)"
-          >Hex to Base64</a>
-        </p>
-
-        <p>
-          <a
-            href="javascript:void(0);"
-            class="btn btn-block btn-secondary"
-            @click="outputText = b64tohex(inputText)"
-          >Base64 to Hex</a>
-        </p>
-
-        <p>
-          <a
-            href="javascript:void(0);"
-            class="btn btn-block btn-secondary"
-            @click="outputText = hextosig(inputText)"
-          >IR Hex to Raw</a>
-        </p>
-
-        <p>
-          <a
-            href="javascript:void(0);"
-            class="btn btn-block btn-secondary"
-            @click="outputText = sigtohex(inputText)"
-          >Raw to IR Hex</a>
-        </p>
-
-        <p>
-          <a
-            href="javascript:void(0);"
-            class="btn btn-block btn-secondary"
-            @click="outputText = sigtonec(inputText)"
-          >Read NEC from Raw</a>
-        </p>
-
+        <div class="mb-3">
+          <div class="d-grid gap-2">
+            <a
+              href="javascript:void(0);"
+              class="btn btn-secondary"
+              @click="outputText = hexToB64(inputText)"
+            >Hex to Base64</a>
+            <a
+              href="javascript:void(0);"
+              class="btn btn-secondary"
+              @click="outputText = b64ToHex(inputText)"
+            >Base64 to Hex</a>
+            <a
+              href="javascript:void(0);"
+              class="btn btn-secondary"
+              @click="outputText = hexToSig(inputText)"
+            >IR Hex to Raw</a>
+            <a
+              href="javascript:void(0);"
+              class="btn btn-secondary"
+              @click="outputText = sigToHex(inputText)"
+            >Raw to IR Hex</a>
+            <a
+              href="javascript:void(0);"
+              class="btn btn-secondary"
+              @click="outputText = sigToNec(inputText)"
+            >Raw to NEC</a>
+          </div>
+        </div>
       </div>
 
       <div class="col-md-5">
-
-        <p>
-          <textarea rows="10" class="form-control" :value="outputText" placeholder="Output" />
-        </p>
-
+        <div class="mb-3">
+          <textarea rows="12" class="form-control" :value="outputText" placeholder="Output" readonly />
+        </div>
       </div>
-
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -75,8 +60,7 @@ export default {
     }
   },
   methods: {
-
-    hextobin (input) {
+    hexToBin (input) {
       const ret = []
       for (let i = 0; i < input.length; i += 2) {
         ret.push(String.fromCharCode(`0x${input[i]}${input[i + 1]}`))
@@ -84,7 +68,7 @@ export default {
       return ret.join('')
     },
 
-    bintohex (input) {
+    binToHex (input) {
       const ret = []
       for (let i = 0; i < input.length; i++) {
         ret.push(this._padStart(input.charCodeAt(i).toString(16), 2, '0'))
@@ -92,8 +76,8 @@ export default {
       return ret.join('')
     },
 
-    hextob64 (input) {
-      const decoded = this.hextobin(input)
+    hexToB64 (input) {
+      const decoded = this.hexToBin(input)
       let encoded
       try {
         encoded = window.btoa(decoded)
@@ -104,7 +88,7 @@ export default {
       return encoded
     },
 
-    b64tohex (input) {
+    b64ToHex (input) {
       let decoded
       try {
         decoded = window.atob(input)
@@ -112,11 +96,11 @@ export default {
         window.alert(error.message)
         return
       }
-      return this.bintohex(decoded)
+      return this.binToHex(decoded)
     },
 
-    hextosig (input) {
-      const inputBin = this.hextobin(input)
+    hexToSig (input) {
+      const inputBin = this.hexToBin(input)
 
       // const type = inputBin.charCodeAt(0)
       // const repeat = inputBin.charCodeAt(1)
@@ -139,12 +123,12 @@ export default {
       return ret.join('')
     },
 
-    sigtohex (input) {
+    sigToHex (input) {
       const inputArr = input.replace(/[^\d\x2c]/g, '').split(',').map(v => parseInt(v)).filter(v => v > 0)
 
       // 信号
       const bytes = []
-      for (let signal of inputArr) {
+      for (const signal of inputArr) {
         const byte = Math.round(signal * 269 / 8192)
 
         if (byte < 256) {
@@ -178,7 +162,7 @@ export default {
       return ret.map(byte => this._padStart(byte.toString(16), 2, '0')).join('')
     },
 
-    sigtonec (input) {
+    sigToNec (input) {
       const inputArr = input.replace(/[^\d\x2c]/g, '').split(',').map(v => parseInt(v)).filter(v => v > 0)
 
       const ret = []
@@ -229,10 +213,6 @@ export default {
       }
       return ret
     }
-
-  },
-  metaInfo: {
-    title: 'Broadlink'
   }
 }
 </script>

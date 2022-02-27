@@ -1,42 +1,46 @@
 <template>
   <div id="app">
-
     <nav class="navbar navbar-light bg-light">
-      <router-link to="/" class="navbar-brand">Vales Tools</router-link>
+      <div class="container">
+        <router-link :to="{ name: 'Home' }" class="navbar-brand">Vales Toolbox</router-link>
+        <span class="navbar-text">
+          <a href="https://github.com/valesdev/vales-toolbox" rel="external nofollow" target="_blank">
+            <i class="bi bi-github" role="img" aria-label="GitHub" />
+          </a>
+        </span>
+      </div>
     </nav>
 
     <div class="container mt-4">
-      <transition name="fade">
-        <router-view :key="$route.path" />
-      </transition>
+      <router-view :key="$route.path" />
     </div>
 
+    <div class="container mt-4">
+      <p class="text-muted">
+        <small>
+          Made with &hearts; by <a href="https://valesdigital.com/" rel="external" target="_blank">Vales Digital</a> in China &middot; <a href="https://github.com/valesdev/vales-toolbox" rel="external nofollow" target="_blank">{{ appName }} v{{ appVersion }}</a> &middot; <a href="https://beian.miit.gov.cn/" rel="external nofollow" target="_blank">粤ICP备15083658号-1</a>
+        </small>
+      </p>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  computed: {
+    appName () {
+      return process.env.NAME
+    },
+    appVersion () {
+      return process.env.VERSION
+    }
+  }
 }
 </script>
 
 <style lang="scss">
-#app {
-  .disabled,
-  [disabled] {
-    opacity: .65;
-    filter: alpha(opacity=65);
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-  // vue transition
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .6s ease;
-  }
-  .fade-enter {
-    opacity: 0;
-  }
-  .fade-leave-active {
-    display: none;
-  }
+a {
+  color: inherit;
+  text-decoration: underline;
 }
 </style>

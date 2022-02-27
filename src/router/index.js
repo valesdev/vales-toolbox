@@ -1,39 +1,41 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
-Vue.use(VueRouter)
-
-export default new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+export default createRouter({
+  history: createWebHistory(process.env.BASE_URL),
   routes: [
     {
+      name: 'Home',
       path: '/',
-      component: () => import(/* webpackChunkName: "view" */ '@/views/home')
+      component: () => import('@/views/Home')
     },
     {
-      path: '/text-encoding',
-      component: () => import(/* webpackChunkName: "view" */ '@/views/tool-text-encoding')
+      name: 'ToolTextEncode',
+      path: '/text-encode',
+      component: () => import('@/views/ToolTextEncode')
     },
     {
+      name: 'ToolBase64',
       path: '/base64',
-      component: () => import(/* webpackChunkName: "view" */ '@/views/tool-base64')
+      component: () => import('@/views/ToolBase64')
     },
     {
+      name: 'ToolQrcode',
       path: '/qrcode',
-      component: () => import(/* webpackChunkName: "view" */ '@/views/tool-qrcode')
+      component: () => import('@/views/ToolQrcode')
     },
     {
+      name: 'ToolLoan',
       path: '/loan',
-      component: () => import(/* webpackChunkName: "view" */ '@/views/tool-loan')
+      component: () => import('@/views/ToolLoan')
     },
     {
+      name: 'ToolBroadlink',
       path: '/broadlink',
-      component: () => import(/* webpackChunkName: "view" */ '@/views/tool-broadlink')
+      component: () => import('@/views/ToolBroadlink')
     },
     {
-      path: '*',
-      component: () => import(/* webpackChunkName: "view" */ '@/views/404')
+      path: '/:pathMatch(.*)*',
+      component: () => import('@/views/Error404')
     }
   ]
 })

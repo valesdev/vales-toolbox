@@ -1,172 +1,150 @@
 <template>
-  <div>
+  <main>
+    <h2>二维码生成</h2>
+    <hr />
 
     <div class="row">
-
       <div class="col-md-8">
-
-        <div class="form-group">
+        <div class="mb-3">
+          <label class="form-label">Batch?</label>
           <div>
-            <label>Multiple</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input type="radio" class="form-check-input" v-model="multiple" :value="true"> Yes
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input type="radio" class="form-check-input" v-model="multiple" :value="false"> No
-            </label>
+            <div class="form-check form-check-inline">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" v-model="batch" :value="true" /> Yes
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" v-model="batch" :value="false" /> No
+              </label>
+            </div>
           </div>
         </div>
 
-        <template v-if="multiple === false">
-
+        <template v-if="batch === false">
           <div class="row">
-
-            <div class="col-md-6">
-              <p>Content</p>
-              <p>
-                <textarea rows="3" class="form-control" v-model="content" placeholder="QR Code content goes here." />
-              </p>
+            <div class="col-md-8">
+              <div class="mb-3">
+                <label class="form-label">Content</label>
+                <textarea rows="6" class="form-control" v-model="content" placeholder="QR Code content" />
+              </div>
             </div>
 
-            <div class="col-md-6">
-              <p>Preview</p>
-              <p>
-                <img :src="previewImageUrl" style="display: block; width: 100%; height: auto;" />
-              </p>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label">Preview</label>
+                <div>
+                  <template v-if="previewImageUrl !== null">
+                    <img :src="previewImageUrl" style="display: block; width: 100%; height: auto;" />
+                  </template>
+                  <template v-else>
+                    <span class="text-muted">No content input.</span>
+                  </template>
+                </div>
+              </div>
             </div>
-
           </div>
-
         </template>
 
-        <template v-if="multiple === true">
-
+        <template v-if="batch === true">
           <div class="row">
-
             <div class="col-md-6">
-              <p>Content(s)</p>
-              <p>
-                <textarea rows="5" class="form-control" v-model="contents" placeholder="QR Code content goes here, one qr per line." />
-              </p>
+              <div class="mb-3">
+                <label class="form-label">Content(s)</label>
+                <textarea rows="9" class="form-control" v-model="contents" placeholder="QR Code content list, one entry per line." />
+              </div>
             </div>
 
             <div class="col-md-6">
-              <p>Name(s)</p>
-              <p>
-                <textarea rows="5" class="form-control" v-model="names" placeholder="The name, one name per line." />
-              </p>
+              <div class="mb-3">
+                <label class="form-label">Name(s)</label>
+                <textarea rows="9" class="form-control" v-model="names" placeholder="The name list, one entry per line." />
+              </div>
             </div>
-
           </div>
-
         </template>
-
       </div>
 
       <div class="col-md-4">
-
-        <div class="form-group">
+        <div class="mb-3">
+          <label class="form-label">Error correction level <abbr title="Level L – up to 7% damage&NewLine;Level M – up to 15% damage&NewLine;Level Q – up to 25% damage&NewLine;Level H – up to 30% damage"><i class="bi bi-question-circle" /></abbr></label>
           <div>
-            <label>Error correction level</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input type="radio" class="form-check-input" v-model="errorCorrectionLevel" value="L"> L
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input type="radio" class="form-check-input" v-model="errorCorrectionLevel" value="M"> M
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input type="radio" class="form-check-input" v-model="errorCorrectionLevel" value="Q"> Q
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input type="radio" class="form-check-input" v-model="errorCorrectionLevel" value="H"> H
-            </label>
+            <div class="form-check form-check-inline">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" v-model="errorCorrectionLevel" value="L" /> L
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" v-model="errorCorrectionLevel" value="M" /> M
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" v-model="errorCorrectionLevel" value="Q" /> Q
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" v-model="errorCorrectionLevel" value="H" /> H
+              </label>
+            </div>
           </div>
         </div>
 
         <div class="row">
-
           <div class="col-md-6">
-
-            <div class="form-group">
-              <div>
-                <label>Image width</label>
-              </div>
-              <div class="input-group mb-3">
+            <div class="mb-3">
+              <label class="form-label">Image width</label>
+              <div class="input-group">
                 <input type="number" class="form-control" v-model.number="width" step="1" min="64" max="1024" />
-                <div class="input-group-append">
-                  <span class="input-group-text">px</span>
-                </div>
+                <span class="input-group-text">px</span>
               </div>
             </div>
-
           </div>
 
           <div class="col-md-6">
-
-            <div class="form-group">
-              <div>
-                <label>Margin</label>
-              </div>
-              <div class="input-group mb-3">
-                <input type="number" class="form-control" v-model.number="margin" step="1" min="1" max="16" />
-                <div class="input-group-append">
-                  <span class="input-group-text">times</span>
-                </div>
+            <div class="mb-3">
+              <label class="form-label">Margin <abbr title="4% of image width one time"><i class="bi bi-question-circle" /></abbr></label>
+              <div class="input-group">
+                <input type="number" class="form-control" v-model.number="margin" step="1" min="0" max="16" />
+                <span class="input-group-text">times</span>
               </div>
             </div>
-
           </div>
-
         </div>
 
         <!--
-        <div class="form-group">
-          <div>
-            <label>Scale</label>
-          </div>
-          <div class="input-group mb-3">
+        <div>
+          <label class="form-label">Scale</label>
+          <div class="input-group">
             <input type="number" class="form-control" v-model.number="scale" step="1" min="1" max="16" />
-            <div class="input-group-append">
-              <span class="input-group-text">px</span>
-            </div>
+            <span class="input-group-text">px</span>
           </div>
         </div>
         -->
 
-        <p>
+        <div>
           <a href="javascript:void(0);" class="btn btn-secondary" @click="toExport">
-            <template v-if="multiple === false">Export PNG</template>
+            <template v-if="batch === false">Export as PNG</template>
             <template v-else>Export {{ previewCount }} PNG(s) as ZIP archive</template>
           </a>
-        </p>
-
+        </div>
       </div>
-
     </div>
-
-  </div>
+  </main>
 </template>
 
 <script>
+import Files from 'file-promisify'
 import FileSaver from 'file-saver'
 import JSZip from 'jszip'
 import QRCode from 'qrcode'
+
 export default {
   data () {
     return {
-      multiple: false,
+      batch: false,
       content: '',
       previewImageUrl: null,
       previewCount: 0,
@@ -201,7 +179,7 @@ export default {
   methods: {
 
     toExport () {
-      if (this.multiple === false) {
+      if (this.batch === false) {
         return this._submitSingle()
       } else {
         return this._submitMultiple()
@@ -216,7 +194,7 @@ export default {
 
       return this._generateDataUrl(this.content)
         .then(dataUrl => {
-          return this.$file.dataUrlToBlob({ dataUrl })
+          return Files.dataUrlToBlob(dataUrl)
         })
         .then(blob => {
           FileSaver.saveAs(blob, 'qrcode.png')
@@ -255,7 +233,7 @@ export default {
         this._walkArray(contents, (_, index, callback) => {
           this._generateDataUrl(contents[index])
             .then(dataUrl => {
-              return this.$file.dataUrlToBlob({ dataUrl })
+              return Files.dataUrlToBlob(dataUrl)
             })
             .then(blob => {
               callback(null, { blob, name: names[index] })
@@ -286,23 +264,23 @@ export default {
 
     _previewSingle () {
       if (typeof this.content !== 'string' || this.content.length <= 0) {
-        this.$set(this, 'previewImageUrl', null)
+        this.previewImageUrl = null
         return
       }
 
       return this._generateDataUrl(this.content)
         .then(dataUrl => {
-          this.$set(this, 'previewImageUrl', dataUrl)
+          this.previewImageUrl = dataUrl
         })
     },
 
     _previewMultiple () {
       if (typeof this.contents !== 'string' || this.contents.length <= 0) {
-        this.$set(this, 'previewCount', 0)
+        this.previewCount = 0
         return
       }
 
-      this.$set(this, 'previewCount', this.contents.split('\n').filter(el => el.length > 0).length)
+      this.previewCount = this.contents.split('\n').filter(el => el.length > 0).length
     },
 
     _generateDataUrl (content) {
@@ -364,9 +342,6 @@ export default {
       walk()
     }
 
-  },
-  metaInfo: {
-    title: 'QR Code'
   }
 }
 </script>
