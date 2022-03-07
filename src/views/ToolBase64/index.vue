@@ -24,7 +24,7 @@
         <div class="mb-3">
           <template v-if="inputType === 'text'">
             <label class="form-label">Input Text</label>
-            <textarea rows="5" class="form-control" v-model="inputText" placeholder="Input" />
+            <textarea rows="5" class="form-control font-monospace" v-model="inputText" placeholder="Input" />
           </template>
 
           <template v-if="inputType === 'file'">
@@ -65,7 +65,7 @@
         <template v-if="outputType === 'text'">
           <div class="mb-3">
             <label class="form-label">Output Text</label>
-            <textarea rows="5" class="form-control" :value="outputText" placeholder="Output" readonly />
+            <textarea rows="5" class="form-control font-monospace" :value="outputText" placeholder="Output" readonly />
           </div>
         </template>
       </div>

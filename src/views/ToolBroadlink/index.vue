@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col-md-5">
         <div class="mb-3">
-          <textarea rows="12" class="form-control" v-model="inputText" placeholder="Input" />
+          <textarea rows="12" class="form-control font-monospace" v-model="inputText" placeholder="Input" />
         </div>
       </div>
 
@@ -44,7 +44,7 @@
 
       <div class="col-md-5">
         <div class="mb-3">
-          <textarea rows="12" class="form-control" :value="outputText" placeholder="Output" readonly />
+          <textarea rows="12" class="form-control font-monospace" :value="outputText" placeholder="Output" readonly />
         </div>
       </div>
     </div>

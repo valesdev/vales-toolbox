@@ -8,35 +8,35 @@
       <div class="col-sm-6 col-md-4">
         <div class="mb-3">
           <label class="form-label">Input</label>
-          <textarea rows="3" class="form-control" v-model="input" placeholder="Input" />
+          <textarea rows="3" class="form-control font-monospace" v-model="input" placeholder="Input" />
         </div>
       </div>
 
       <div class="col-sm-6 col-md-4">
         <div class="mb-3">
           <label class="form-label">URL Encoded</label>
-          <textarea rows="3" class="form-control" :value="outputUrlencoded" placeholder="Output" readonly />
+          <textarea rows="3" class="form-control font-monospace" :value="outputUrlencoded" placeholder="Output" readonly />
         </div>
       </div>
 
       <div class="col-sm-6 col-md-4">
         <div class="mb-3">
           <label class="form-label">ASCII</label>
-          <textarea rows="3" class="form-control" :value="outputAscii" placeholder="Output" readonly />
+          <textarea rows="3" class="form-control font-monospace" :value="outputAscii" placeholder="Output" readonly />
         </div>
       </div>
 
       <div class="col-sm-6 col-md-4">
         <div class="mb-3">
           <label class="form-label">Unicode HTML</label>
-          <textarea rows="3" class="form-control" :value="outputUnicodeHtml" placeholder="Output" readonly />
+          <textarea rows="3" class="form-control font-monospace" :value="outputUnicodeHtml" placeholder="Output" readonly />
         </div>
       </div>
 
       <div class="col-sm-6 col-md-4">
         <div class="mb-3">
           <label class="form-label">UTF-8 HTML</label>
-          <textarea rows="3" class="form-control" :value="outputUtf8Html" placeholder="Output" readonly />
+          <textarea rows="3" class="form-control font-monospace" :value="outputUtf8Html" placeholder="Output" readonly />
         </div>
       </div>
 
