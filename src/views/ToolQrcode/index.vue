@@ -95,11 +95,34 @@
 
           <div class="col-6 col-md-12 col-xl-6">
             <div class="mb-3">
+              <label class="form-label">Margin</label>
+              <div class="input-group">
+                <input type="number" class="form-control" v-model.number="margin" step="1" min="0" max="128" />
+                <span class="input-group-text">pixels</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6 col-md-12 col-xl-6">
+            <div class="mb-3">
               <label class="form-label">Quite zone</label>
               <div class="input-group">
-                <input type="number" class="form-control" v-model.number="margin" step="1" min="0" max="16" />
+                <input type="number" class="form-control" v-model.number="quietZone" step="1" min="0" max="16" />
                 <span class="input-group-text">dots</span>
               </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-12 col-xl-6">
+            <div class="mb-3">
+              <label class="form-label">Image format</label>
+              <select class="form-select" v-model="format">
+                <option value="image/png">PNG</option>
+                <option value="image/jpeg">JPEG</option>
+                <option value="image/webp">webP</option>
+              </select>
             </div>
           </div>
         </div>
@@ -117,6 +140,25 @@
         <div class="row">
           <div class="col-6 col-md-12 col-xl-6">
             <div class="mb-3">
+              <label class="form-label">Overlay image</label>
+              <form-file v-model="overlay" accept="image/*" />
+            </div>
+          </div>
+
+          <div class="col-6 col-md-12 col-xl-6">
+            <div class="mb-3">
+              <label class="form-label">Overlay background</label>
+              <select class="form-select" v-model="overlayBg">
+                <option :value="null">none</option>
+                <option value="white_rounded">rounded white</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6 col-md-12 col-xl-6">
+            <div class="mb-3">
               <label class="form-label">Foreground color</label>
               <input type="color" class="form-control form-control-color" v-model="fgColor" />
             </div>
@@ -126,26 +168,6 @@
             <div class="mb-3">
               <label class="form-label">Background color</label>
               <input type="color" class="form-control form-control-color" v-model="bgColor" />
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-6 col-md-12 col-xl-6">
-            <div class="mb-3">
-              <label class="form-label">Overlay image</label>
-              <form-file v-model="overlay" accept="image/*" />
-            </div>
-          </div>
-
-          <div class="col-6 col-md-12 col-xl-6">
-            <div class="mb-3">
-              <label class="form-label">Image format</label>
-              <select class="form-select" v-model="format">
-                <option value="image/png">PNG</option>
-                <option value="image/jpeg">JPEG</option>
-                <option value="image/webp">webP</option>
-              </select>
             </div>
           </div>
         </div>
@@ -177,13 +199,15 @@ export default {
       contents: '',
       names: '',
       format: 'image/png',
+      margin: 10,
+      overlay: null,
+      overlayBg: null,
       errorCorrectionLevel: 'L',
       scale: 0,
-      margin: 0,
-      width: 512,
+      quietZone: 0,
+      width: 800,
       fgColor: '#000000',
-      bgColor: '#ffffff',
-      overlay: null
+      bgColor: '#ffffff'
     }
   },
   watch: {
@@ -196,13 +220,22 @@ export default {
     format () {
       this._previewSingle()
     },
+    margin () {
+      this._previewSingle()
+    },
+    overlay () {
+      this._previewSingle()
+    },
+    overlayBg () {
+      this._previewSingle()
+    },
     errorCorrectionLevel () {
       this._previewSingle()
     },
     scale () {
       this._previewSingle()
     },
-    margin () {
+    quietZone () {
       this._previewSingle()
     },
     width () {
@@ -212,9 +245,6 @@ export default {
       this._previewSingle()
     },
     bgColor () {
-      this._previewSingle()
-    },
-    overlay () {
       this._previewSingle()
     }
   },
@@ -346,19 +376,80 @@ export default {
       return QRCode.toCanvas(content, {
         errorCorrectionLevel: this.errorCorrectionLevel,
         scale: this.scale,
-        margin: this.margin,
-        width: this.width,
+        margin: this.quietZone,
+        width: (this.width - this.margin * 2),
         color: {
           dark: this.fgColor,
           light: this.bgColor
         }
       })
+        .then(canvasContent => {
+          // draw content within margin box
+          const canvas = window.document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+          canvas.width = this.width
+          canvas.height = this.width
+          ctx.fillStyle = 'white'
+          ctx.fillRect(0, 0, canvas.width, canvas.height)
+          ctx.drawImage(canvasContent, this.margin, this.margin, canvasContent.width, canvasContent.height)
+          return canvas
+        })
+        .then(canvas => {
+          if (this.overlayBg !== null) {
+            const ctx = canvas.getContext('2d')
+
+            // draw overlay background
+            switch (this.overlayBg) {
+              case 'white_rounded':
+                this._canvasRoundedRect(
+                  ctx,
+                  canvas.width * 0.36,
+                  canvas.height * 0.36,
+                  canvas.width * 0.28,
+                  canvas.height * 0.28,
+                  canvas.width * 0.04
+                )
+                ctx.fillStyle = '#ffffff'
+                ctx.fill()
+                break
+            }
+          }
+          return canvas
+        })
         .then(canvas => {
           if (this.overlay !== null) {
             return Promise.resolve(this.overlay)
               .then(blob => Files.blobToDataUrl(blob))
               .then(dataUrl => Files.urlToImage(dataUrl))
-              .then(image => canvas.getContext('2d').drawImage(image, canvas.width * 0.36, canvas.height * 0.36, canvas.width * 0.28, canvas.height * 0.28))
+              .then(image => {
+                const ctx = canvas.getContext('2d')
+                ctx.save()
+
+                // clip
+                switch (this.overlayBg) {
+                  case 'white_rounded':
+                    this._canvasRoundedRect(
+                      ctx,
+                      canvas.width * 0.37,
+                      canvas.height * 0.37,
+                      canvas.width * 0.26,
+                      canvas.height * 0.26,
+                      canvas.width * 0.03
+                    )
+                    ctx.clip()
+                    break
+                }
+
+                // draw overlay
+                ctx.drawImage(
+                  image,
+                  canvas.width * 0.37,
+                  canvas.height * 0.37,
+                  canvas.width * 0.26,
+                  canvas.height * 0.26
+                )
+                ctx.restore()
+              })
               .then(() => canvas)
           }
           return canvas
@@ -366,6 +457,20 @@ export default {
         .then(canvas => {
           return canvas.toDataURL(this.format)
         })
+    },
+
+    _canvasRoundedRect (context, x, y, w, h, r) {
+      context.beginPath()
+      context.moveTo(x + r, y)
+      context.lineTo(x + w - r, y)
+      context.quadraticCurveTo(x + w, y, x + w, y + r)
+      context.lineTo(x + w, y + h - r)
+      context.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+      context.lineTo(x + r, y + h)
+      context.quadraticCurveTo(x, y + h, x, y + h - r)
+      context.lineTo(x, y + r)
+      context.quadraticCurveTo(x, y, x + r, y)
+      context.closePath()
     },
 
     _padStart (input, length, string) {

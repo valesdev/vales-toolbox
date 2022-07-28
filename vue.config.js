@@ -3,8 +3,6 @@ const { defineConfig } = require('@vue/cli-service')
 const pkg = require('./package.json')
 
 module.exports = defineConfig({
-  transpileDependencies: true,
-
   productionSourceMap: false,
 
   publicPath: '/',
@@ -13,8 +11,7 @@ module.exports = defineConfig({
     config
       .externals({
         vue: 'Vue',
-        vue$: 'Vue',
-        numbro: 'numbro'
+        'vue-router': 'VueRouter'
       })
 
     config.plugin('define')

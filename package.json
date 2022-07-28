@@ -1,6 +1,6 @@
 {
   "name": "@vales/vales-toolbox",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -9,12 +9,11 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "file-promisify": "^2.0.2",
+    "file-promisify": "^3.0.0",
     "file-saver": "^2.0.5",
-    "jszip": "^3.7.1",
-    "qrcode": "^1.5.0",
-    "vue": "^3.2.13",
-    "vue-router": "^4.0.3"
+    "jszip": "^3.10.0",
+    "numbro": "^2.3.6",
+    "qrcode": "^1.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -28,7 +27,7 @@
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-vue": "^8.0.3",
+    "eslint-plugin-vue": "^7.20.0",
     "sass": "^1.32.7",
     "sass-loader": "^12.0.0"
   }
