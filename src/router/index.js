@@ -24,6 +24,11 @@ export default createRouter({
       component: () => import('@/views/ToolQrcode')
     },
     {
+      name: 'ToolCharmap',
+      path: '/charmap',
+      component: () => import('@/views/ToolCharmap')
+    },
+    {
       name: 'ToolLoan',
       path: '/loan',
       component: () => import('@/views/ToolLoan')

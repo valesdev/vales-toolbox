@@ -35,6 +35,16 @@
       <div class="col-sm-6 col-md-4 mb-4">
         <div class="card">
           <div class="card-body">
+            <h5 class="card-title">字符映射表</h5>
+            <p class="card-text">Character Map</p>
+            <router-link :to="{ name: 'ToolCharmap' }" class="btn btn-primary">开始使用</router-link>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
             <h5 class="card-title">贷款计算</h5>
             <p class="card-text">Loan calculator</p>
             <router-link :to="{ name: 'ToolLoan' }" class="btn btn-primary">开始使用</router-link>

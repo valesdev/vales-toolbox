@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div>
     <nav class="navbar navbar-light bg-light">
       <div class="container">
         <router-link :to="{ name: 'Home' }" class="navbar-brand">Vales Toolbox</router-link>
