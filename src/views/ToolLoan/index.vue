@@ -13,6 +13,7 @@
           </div>
         </div>
       </div>
+
       <div class="col-6 col-md-4">
         <div class="mb-3">
           <label class="form-label">期数</label>
@@ -22,6 +23,7 @@
           </div>
         </div>
       </div>
+
       <div class="col-6 col-md-4">
         <div class="mb-3">
           <template v-if="method !== 'fq'">
@@ -31,6 +33,7 @@
               <span class="input-group-text">％</span>
             </div>
           </template>
+
           <template v-else>
             <label class="form-label">月手续费</label>
             <div class="input-group">
@@ -99,10 +102,10 @@
           <tbody>
             <tr v-for="num in period" :key="num">
               <th class="text-center">{{ num }}</th>
-              <td class="text-end font-monospace">{{ filterCurrency(result[num][0]) }}</td>
-              <td class="text-end font-monospace">{{ filterCurrency(result[num][1]) }}</td>
-              <td class="text-end font-monospace">{{ filterCurrency(result[num][2]) }}</td>
-              <td class="text-end font-monospace">{{ filterCurrency(result[num][3]) }}</td>
+              <td class="text-end font-monospace">{{ filterCurrency(result.list[num][0]) }}</td>
+              <td class="text-end font-monospace">{{ filterCurrency(result.list[num][1]) }}</td>
+              <td class="text-end font-monospace">{{ filterCurrency(result.list[num][2]) }}</td>
+              <td class="text-end font-monospace">{{ filterCurrency(result.list[num][3]) }}</td>
             </tr>
           </tbody>
         </table>
@@ -111,104 +114,114 @@
   </main>
 </template>
 
-<script>
+<script lang="ts" setup>
 import numbro from 'numbro'
+import { ref, computed, watch } from 'vue';
 
-export default {
-  data () {
-    return {
-      loan: 1000000,
-      period: 240,
-      rateYear: 4.9,
-      rateMonth: 4.9 / 12,
-      method: 'debx'
-    }
-  },
-  computed: {
-    result () {
-      const output = {}
-      let corpusLeftMon = this.loan // 等额还款之剩余本金
-      let capMon = 0
-      let corpusMon = 0
-      let varerestMon = 0
-      let capTotal = 0
-      let corpusTotal = 0
-      let varerestTotal = 0
-      switch (this.method) {
-        case 'debx':
-          for (let i = 1; i <= this.period; i++) {
-            capMon = (this.loan * (this.rateYear / 12 / 100) * Math.pow((this.rateYear / 12 / 100) + 1, this.period)) / (Math.pow((this.rateYear / 12 / 100) + 1, this.period) - 1) // 月供
-            varerestMon = corpusLeftMon * (this.rateYear / 12 / 100) // 月供利息
-            corpusMon = capMon - varerestMon // 月供本金
-            corpusLeftMon -= corpusMon // 本金余额
-            capTotal += capMon // 还款总额
-            corpusTotal += corpusMon // 本金总额
-            varerestTotal += varerestMon // 利息总额
-            output[i] = [capMon, corpusMon, varerestMon, corpusLeftMon]
-          }
-          break
-        case 'debj':
-          corpusMon = this.loan / this.period // 月供本金
-          for (let i = 1; i <= this.period; i++) {
-            varerestMon = corpusLeftMon * (this.rateYear / 12 / 100) // 月供利息
-            capMon = corpusMon + varerestMon // 月供
-            corpusLeftMon -= corpusMon // 本金余额
-            capTotal += capMon // 还款总额
-            corpusTotal += corpusMon // 本金总额
-            varerestTotal += varerestMon // 利息总额
-            output[i] = [capMon, corpusMon, varerestMon, corpusLeftMon]
-          }
-          break
-        case 'xxhb':
-          for (let i = 1; i <= this.period; i++) {
-            corpusMon = 0 // 月供本金
-            if (this.period === i) {
-              corpusMon = corpusLeftMon
-            }
-            varerestMon = corpusLeftMon * (this.rateYear / 12 / 100) // 月供利息
-            capMon = corpusMon + varerestMon // 月供
-            corpusLeftMon -= corpusMon // 本金余额
-            capTotal += capMon // 还款总额
-            corpusTotal += corpusMon // 本金总额
-            varerestTotal += varerestMon // 利息总额
-            output[i] = [capMon, corpusMon, varerestMon, corpusLeftMon]
-          }
-          break
-        case 'fq':
-          for (let i = 1; i <= this.period; i++) {
-            corpusMon = this.loan / this.period // 月供本金
-            varerestMon = this.loan * (this.rateMonth / 100) // 月供利息
-            capMon = corpusMon + varerestMon // 月供
-            corpusLeftMon -= corpusMon // 本金余额
-            capTotal += capMon // 还款总额
-            corpusTotal += corpusMon // 本金总额
-            varerestTotal += varerestMon // 利息总额
-            output[i] = [capMon, corpusMon, varerestMon, corpusLeftMon]
-          }
-          break
-      }
-      output.capTotal = capTotal
-      output.corpusTotal = corpusTotal
-      output.varerestTotal = varerestTotal
-      return output
-    }
-  },
-  watch: {
-    rateYear (val) {
-      if (this.method === 'fq') {
-        this.rateMonth = val / 12
-      }
-    },
-    rateMonth (val) {
-      if (this.method === 'fq') {
-        this.rateYear = val * 12
-      }
-    }
-  },
-  methods: {
-    filterCurrency (value) {
-      return numbro(value).format('0,0.00')
-    }
+const loan = ref<number>(1000000)
+const period = ref<number>(240)
+const rateYear = ref<number>(4.9)
+const rateMonth = ref<number>(4.9 / 12)
+const method = ref<string>('debx')
+
+const result = computed(() => {
+  const output: {
+    list: { [index: number]: Array<number> }
+    capTotal: number
+    corpusTotal: number
+    varerestTotal: number
+  } = {
+    list: {},
+    capTotal: 0,
+    corpusTotal: 0,
+    varerestTotal: 0,
   }
+
+  let corpusLeftMon = loan.value // 等额还款之剩余本金
+  let capMon = 0
+  let corpusMon = 0
+  let varerestMon = 0
+  let capTotal = 0
+  let corpusTotal = 0
+  let varerestTotal = 0
+
+  switch (method.value) {
+    case 'debx':
+      for (let i = 1; i <= period.value; i++) {
+        capMon = (loan.value * (rateYear.value / 12 / 100) * Math.pow((rateYear.value / 12 / 100) + 1, period.value)) / (Math.pow((rateYear.value / 12 / 100) + 1, period.value) - 1) // 月供
+        varerestMon = corpusLeftMon * (rateYear.value / 12 / 100) // 月供利息
+        corpusMon = capMon - varerestMon // 月供本金
+        corpusLeftMon -= corpusMon // 本金余额
+        capTotal += capMon // 还款总额
+        corpusTotal += corpusMon // 本金总额
+        varerestTotal += varerestMon // 利息总额
+        output.list[i] = [capMon, corpusMon, varerestMon, corpusLeftMon]
+      }
+      break
+
+    case 'debj':
+      corpusMon = loan.value / period.value // 月供本金
+      for (let i = 1; i <= period.value; i++) {
+        varerestMon = corpusLeftMon * (rateYear.value / 12 / 100) // 月供利息
+        capMon = corpusMon + varerestMon // 月供
+        corpusLeftMon -= corpusMon // 本金余额
+        capTotal += capMon // 还款总额
+        corpusTotal += corpusMon // 本金总额
+        varerestTotal += varerestMon // 利息总额
+        output.list[i] = [capMon, corpusMon, varerestMon, corpusLeftMon]
+      }
+      break
+
+    case 'xxhb':
+      for (let i = 1; i <= period.value; i++) {
+        corpusMon = 0 // 月供本金
+        if (period.value === i) {
+          corpusMon = corpusLeftMon
+        }
+        varerestMon = corpusLeftMon * (rateYear.value / 12 / 100) // 月供利息
+        capMon = corpusMon + varerestMon // 月供
+        corpusLeftMon -= corpusMon // 本金余额
+        capTotal += capMon // 还款总额
+        corpusTotal += corpusMon // 本金总额
+        varerestTotal += varerestMon // 利息总额
+        output.list[i] = [capMon, corpusMon, varerestMon, corpusLeftMon]
+      }
+      break
+
+    case 'fq':
+      for (let i = 1; i <= period.value; i++) {
+        corpusMon = loan.value / period.value // 月供本金
+        varerestMon = loan.value * (rateMonth.value / 100) // 月供利息
+        capMon = corpusMon + varerestMon // 月供
+        corpusLeftMon -= corpusMon // 本金余额
+        capTotal += capMon // 还款总额
+        corpusTotal += corpusMon // 本金总额
+        varerestTotal += varerestMon // 利息总额
+        output.list[i] = [capMon, corpusMon, varerestMon, corpusLeftMon]
+      }
+      break
+  }
+
+  output.capTotal = capTotal
+  output.corpusTotal = corpusTotal
+  output.varerestTotal = varerestTotal
+
+  return output
+})
+
+watch(rateYear, (val) => {
+  if (method.value === 'fq') {
+    rateMonth.value = val / 12
+  }
+})
+
+watch(rateMonth, (val) => {
+  if (method.value === 'fq') {
+    rateYear.value = val * 12
+  }
+})
+
+const filterCurrency = (value: any) => {
+  return numbro(value).format('0,0.00')
 }
 </script>

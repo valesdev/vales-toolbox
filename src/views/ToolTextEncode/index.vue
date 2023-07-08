@@ -7,78 +7,86 @@
 
       <div class="col-sm-6 col-md-4">
         <div class="mb-3">
-          <label class="form-label">Input</label>
-          <textarea rows="3" class="form-control font-monospace" v-model="input" placeholder="Input" />
+          <label class="form-label">输入</label>
+          <textarea rows="3" class="form-control font-monospace" v-model="input" placeholder="输入" />
         </div>
       </div>
 
       <div class="col-sm-6 col-md-4">
         <div class="mb-3">
           <label class="form-label">URL Encoded</label>
-          <textarea rows="3" class="form-control font-monospace" :value="outputUrlencoded" placeholder="Output" readonly />
+          <textarea rows="3" class="form-control font-monospace" :value="outputUrlencoded" placeholder="输出" readonly />
         </div>
       </div>
 
       <div class="col-sm-6 col-md-4">
         <div class="mb-3">
           <label class="form-label">ASCII</label>
-          <textarea rows="3" class="form-control font-monospace" :value="outputAscii" placeholder="Output" readonly />
+          <textarea rows="3" class="form-control font-monospace" :value="outputAscii" placeholder="输出" readonly />
         </div>
       </div>
 
       <div class="col-sm-6 col-md-4">
         <div class="mb-3">
           <label class="form-label">Unicode HTML</label>
-          <textarea rows="3" class="form-control font-monospace" :value="outputUnicodeHtml" placeholder="Output" readonly />
+          <textarea rows="3" class="form-control font-monospace" :value="outputUnicodeHtml" placeholder="输出" readonly />
         </div>
       </div>
 
       <div class="col-sm-6 col-md-4">
         <div class="mb-3">
           <label class="form-label">UTF-8 HTML</label>
-          <textarea rows="3" class="form-control font-monospace" :value="outputUtf8Html" placeholder="Output" readonly />
+          <textarea rows="3" class="form-control font-monospace" :value="outputUtf8Html" placeholder="输出" readonly />
         </div>
       </div>
 
     </div>
+
+    <!--
+    <h3>CJK</h3>
+
+    <pre>⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺</pre>
+
+    <div style="font-size: 4rem; font-family: 'Source Han Serif SC';">
+      <div>⿺辶⿳穴⿰月⿰⿲⿱幺长⿱言马⿱幺长刂心</div>
+      <div>⿺辶⿳穴⿰月⿰⿲⿱幺長⿱言馬⿱幺長刂心</div>
+    </div>
+    -->
   </main>
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      input: ''
-    }
-  },
-  computed: {
-    outputUrlencoded () {
-      return encodeURIComponent(this.input)
-    },
-    outputAscii () {
-      const chars = this.input.split('')
-      let output = ''
-      for (let i = 0; i < chars.length; i++) {
-        const code = Number(chars[i].charCodeAt(0))
-        let charAscii = code.toString(16)
-        charAscii = ('0000').substring(charAscii.length, 4) + charAscii
-        output += '\\u' + charAscii
-      }
-      return output
-    },
-    outputUnicodeHtml () {
-      let output = ''
-      for (let i = 0; i < this.input.length; i++) {
-        output += '&#' + this.input.charCodeAt(i) + ';'
-      }
-      return output
-    },
-    outputUtf8Html () {
-      // eslint-disable-next-line no-control-regex
-      return this.input.replace(/[^\u0000-\u00FF]/g, function ($0) {
-        return window.escape($0).replace(/(%u)(\w{4})/gi, '&#x$2;')
-      })
-    }
+<script lang="ts" setup>
+import { ref, computed } from 'vue'
+
+const input = ref<string>('')
+
+const outputUrlencoded = computed(() => {
+  return encodeURIComponent(input.value)
+})
+
+const outputAscii = computed(() => {
+  const chars = input.value.split('')
+  let output = ''
+  for (let i = 0; i < chars.length; i++) {
+    const code = Number(chars[i].charCodeAt(0))
+    let charAscii = code.toString(16)
+    charAscii = ('0000').substring(charAscii.length, 4) + charAscii
+    output += `\\u${charAscii}`
   }
-}
+  return output
+})
+
+const outputUnicodeHtml = computed(() => {
+  let output = ''
+  for (let i = 0; i < input.value.length; i++) {
+    output += `&#${input.value.charCodeAt(i)};`
+  }
+  return output
+})
+
+const outputUtf8Html = computed(() => {
+  return input.value.replace(/[^\u0000-\u00FF]/g, function ($0) {
+    return window.escape($0).replace(/(%u)(\w{4})/gi, '&#x$2;')
+  })
+})
 </script>

@@ -2,7 +2,7 @@
   <div>
     <nav class="navbar navbar-light bg-light">
       <div class="container">
-        <router-link :to="{ name: 'Home' }" class="navbar-brand">Vales Toolbox</router-link>
+        <RouterLink :to="{ name: 'Home' }" class="navbar-brand">Vales Toolbox</RouterLink>
         <span class="navbar-text">
           <a href="https://github.com/valesdev/vales-toolbox" rel="external nofollow" target="_blank">
             <i class="bi bi-github" role="img" aria-label="GitHub" />
@@ -25,17 +25,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  computed: {
-    appName () {
-      return process.env.NAME
-    },
-    appVersion () {
-      return process.env.VERSION
-    }
-  }
-}
+<script lang="ts" setup>
+import { computed } from 'vue'
+
+const appName = computed(() => import.meta.env.VITE_APP_NAME)
+const appVersion = computed(() => import.meta.env.VITE_APP_VERSION)
 </script>
 
 <style lang="scss">
