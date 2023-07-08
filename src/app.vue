@@ -39,6 +39,10 @@ export default {
 </script>
 
 <style lang="scss">
+body {
+  font-feature-settings: 'liga', 'clig', 'ccmp';
+}
+
 a {
   color: inherit;
   text-decoration: underline;

@@ -21,11 +21,11 @@
       </div>
     </div>
 
-    <div class="ToolCharmap__list">
+    <div class="ToolCharMap__list">
       <template v-for="char in chars" :key="char">
-        <div class="ToolCharmap__item">
-          <div class="ToolCharmap__item-char">{{ char }}</div>
-          <div class="ToolCharmap__item-label"><code>{{ labelForChar(char) }}</code></div>
+        <div class="ToolCharMap__item">
+          <div class="ToolCharMap__item-char">{{ char }}</div>
+          <div class="ToolCharMap__item-label"><code>{{ labelForChar(char) }}</code></div>
         </div>
       </template>
     </div>
@@ -61,16 +61,14 @@ export default {
   methods: {
     labelForChar (char) {
       const code = Number(char.charCodeAt(0))
-      let charAscii = code.toString(16)
-      charAscii = ('0000').substring(charAscii.length, 4) + charAscii
-      return 'U+' + charAscii
+      return 'U+' + code.toString(16)
     }
   }
 }
 </script>
 
 <style lang="scss">
-.ToolCharmap {
+.ToolCharMap {
   &__list {
     display: flex;
     flex-wrap: wrap;
