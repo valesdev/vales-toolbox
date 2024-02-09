@@ -5,19 +5,9 @@
       <div class="col-sm-6 col-md-4 mb-4">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">文本编码</h5>
-            <p class="card-text">Text encoder</p>
-            <RouterLink :to="{ name: 'ToolTextEncode' }" class="btn btn-primary">开始使用</RouterLink>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-6 col-md-4 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Base64 编码和解码</h5>
-            <p class="card-text">Base64 encode and decode</p>
-            <RouterLink :to="{ name: 'ToolBase64' }" class="btn btn-primary">开始使用</RouterLink>
+            <h5 class="card-title">数据处理</h5>
+            <p class="card-text">Data Processing</p>
+            <RouterLink :to="{ name: 'ToolDataProcessing' }" class="btn btn-primary">开始使用</RouterLink>
           </div>
         </div>
       </div>

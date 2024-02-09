@@ -141,7 +141,7 @@
           <div class="col-6 col-md-12 col-xl-6">
             <div class="mb-3">
               <label class="form-label">覆盖图片</label>
-              <FormFile v-model="overlay" accept="image/*" />
+              <FormFile v-model:value="overlay" accept="image/*" />
             </div>
           </div>
 

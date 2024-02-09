@@ -216,7 +216,7 @@ const padStart = (input: string, length: number, string: string) => {
 }
 
 const onClickHexToB64 = () => {
-  outputText.value = hexToB64(inputText.value)
+  outputText.value = hexToB64(inputText.value.toLowerCase().replace(/[^0-9a-f]/g, ''))
 }
 
 const onClickB64ToHex = () => {
@@ -224,7 +224,7 @@ const onClickB64ToHex = () => {
 }
 
 const onClickHexToSig = () => {
-  outputText.value = hexToSig(inputText.value)
+  outputText.value = hexToSig(inputText.value.toLowerCase().replace(/[^0-9a-f]/g, ''))
 }
 
 const onClickSigToHex = () => {

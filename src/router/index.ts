@@ -9,14 +9,9 @@ export default createRouter({
       component: () => import('@/views/Home/index.vue')
     },
     {
-      name: 'ToolTextEncode',
-      path: '/text-encode',
-      component: () => import('@/views/ToolTextEncode/index.vue')
-    },
-    {
-      name: 'ToolBase64',
-      path: '/base64',
-      component: () => import('@/views/ToolBase64/index.vue')
+      name: 'ToolDataProcessing',
+      path: '/data-processing',
+      component: () => import('@/views/ToolDataProcessing/index.vue')
     },
     {
       name: 'ToolQrcode',
@@ -26,7 +21,7 @@ export default createRouter({
     {
       name: 'ToolCharmap',
       path: '/charmap',
-      component: () => import('@/views/ToolCharMap/index.vue')
+      component: () => import('@/views/ToolCharmap/index.vue')
     },
     {
       name: 'ToolLoan',

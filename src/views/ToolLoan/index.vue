@@ -26,7 +26,7 @@
 
       <div class="col-6 col-md-4">
         <div class="mb-3">
-          <template v-if="method !== 'fq'">
+          <template v-if="method !== Method.FQ">
             <label class="form-label">年利率</label>
             <div class="input-group">
               <input type="number" class="form-control" v-model="rateYear" placeholder="单位：%" min="0.001" max="100" step="0.001" />
@@ -48,25 +48,27 @@
     <div class="mb-3">
       <label class="form-label">还款方式</label>
       <div>
-        <div class="form-check form-check-inline">
-          <label class="form-check-label">
-            <input type="radio" class="form-check-input" v-model="method" value="debx" /> 等额本息
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <label class="form-check-label">
-            <input type="radio" class="form-check-input" v-model="method" value="debj" /> 等额本金
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <label class="form-check-label">
-            <input type="radio" class="form-check-input" v-model="method" value="xxhb" /> 先息后本
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <label class="form-check-label">
-            <input type="radio" class="form-check-input" v-model="method" value="fq" /> 分期
-          </label>
+        <div class="btn-group">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            :class="{ 'active': method === Method.DEBX }"
+            @click="method = Method.DEBX">等额本息</button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            :class="{ 'active': method === Method.DEBJ }"
+            @click="method = Method.DEBJ">等额本金</button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            :class="{ 'active': method === Method.XXHB }"
+            @click="method = Method.XXHB">先息后本</button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            :class="{ 'active': method === Method.FQ }"
+            @click="method = Method.FQ">分期</button>
         </div>
       </div>
     </div>
@@ -92,7 +94,7 @@
         <table class="table table-bordered table-hover table-sm">
           <thead>
             <tr>
-              <th class="text-center">#</th>
+              <th class="text-center">＃</th>
               <th class="text-end">月供</th>
               <th class="text-end">月供本金</th>
               <th class="text-end">月供利息</th>
@@ -115,14 +117,22 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, computed, watch } from 'vue'
+
 import numbro from 'numbro'
-import { ref, computed, watch } from 'vue';
+
+enum Method {
+  DEBJ,
+  DEBX,
+  XXHB,
+  FQ,
+}
 
 const loan = ref<number>(1000000)
 const period = ref<number>(240)
 const rateYear = ref<number>(4.9)
 const rateMonth = ref<number>(4.9 / 12)
-const method = ref<string>('debx')
+const method = ref<Method>(Method.DEBX)
 
 const result = computed(() => {
   const output: {
@@ -146,7 +156,7 @@ const result = computed(() => {
   let varerestTotal = 0
 
   switch (method.value) {
-    case 'debx':
+    case Method.DEBJ:
       for (let i = 1; i <= period.value; i++) {
         capMon = (loan.value * (rateYear.value / 12 / 100) * Math.pow((rateYear.value / 12 / 100) + 1, period.value)) / (Math.pow((rateYear.value / 12 / 100) + 1, period.value) - 1) // 月供
         varerestMon = corpusLeftMon * (rateYear.value / 12 / 100) // 月供利息
@@ -159,7 +169,7 @@ const result = computed(() => {
       }
       break
 
-    case 'debj':
+    case Method.DEBX:
       corpusMon = loan.value / period.value // 月供本金
       for (let i = 1; i <= period.value; i++) {
         varerestMon = corpusLeftMon * (rateYear.value / 12 / 100) // 月供利息
@@ -172,7 +182,7 @@ const result = computed(() => {
       }
       break
 
-    case 'xxhb':
+    case Method.XXHB:
       for (let i = 1; i <= period.value; i++) {
         corpusMon = 0 // 月供本金
         if (period.value === i) {
@@ -188,7 +198,7 @@ const result = computed(() => {
       }
       break
 
-    case 'fq':
+    case Method.FQ:
       for (let i = 1; i <= period.value; i++) {
         corpusMon = loan.value / period.value // 月供本金
         varerestMon = loan.value * (rateMonth.value / 100) // 月供利息
@@ -210,13 +220,13 @@ const result = computed(() => {
 })
 
 watch(rateYear, (val) => {
-  if (method.value === 'fq') {
+  if (method.value === Method.FQ) {
     rateMonth.value = val / 12
   }
 })
 
 watch(rateMonth, (val) => {
-  if (method.value === 'fq') {
+  if (method.value === Method.FQ) {
     rateYear.value = val * 12
   }
 })
